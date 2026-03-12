@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkDetoxer - Clean Your URLs</title>
+    <meta name="description" content="Remove tracking parameters from URLs and share clean links. Privacy-first, client-side URL cleaning.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">🔗</span>
+                <h1>LinkDetoxer</h1>
+            </div>
+            <p class="tagline">Paste a URL. Remove every tracker. Share something clean.</p>
+        </header>
+
+        <main>
+            <div class="detox-section">
+                <div class="input-container">
+                    <label for="url-input">Paste your URL here:</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="url-input" placeholder="https://example.com?utm_source=spam&fbclid=tracking..." autocomplete="off">
+                        <button id="clear-btn" class="clear-btn" title="Clear input">×</button>
+                    </div>
+                    <div class="btn-row">
+                        <button id="detox-btn" class="detox-btn">Detox Link</button>
+                        <a href="https://github.com/Angel2mp3/LinkDetoxer/issues" target="_blank" class="report-btn">Report Issue</a>
+                    </div>
+                </div>                <div class="result-container" id="result-container" style="display: none;">
+                    <div class="result-header">
+                        <h3>Clean URL:</h3>
+                        <span class="status-badge" id="status-badge"></span>
+                    </div>
+                    <div class="url-display">
+                        <input type="text" id="clean-url" readonly>
+                        <button id="copy-btn" class="copy-btn">Copy</button>
+                    </div>
+                    <div class="removed-params" id="removed-params" style="display: none;">
+                        <h4>Removed tracking parameters:</h4>
+                        <ul id="params-list"></ul>
+                    </div>
+                </div>                <!-- Bulk Processing Section -->
+                <div class="bulk-section">
+                    <div class="bulk-header">
+                        <h3>Bulk Processing</h3>
+                        <button id="toggle-bulk" class="toggle-bulk-btn">Enable Bulk Mode</button>
+                    </div>
+                    <div class="bulk-container" id="bulk-container" style="display: none;">
+                        <div class="bulk-input-section">
+                            <label for="bulk-input">Paste multiple URLs (one per line):</label>
+                            <textarea id="bulk-input" placeholder="https://example1.com?utm_source=spam&#10;https://example2.com?fbclid=tracking&#10;https://example3.com?gclid=ads..."></textarea>
+                            <div class="bulk-actions">
+                                <button id="bulk-process-btn" class="bulk-btn primary">Process All URLs</button>
+                                <button id="bulk-clear-btn" class="bulk-btn secondary" style="display: none;">Clear</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="bulk-progress" id="bulk-progress" style="display: none;">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="bulk-progress-bar"></div>
+                            </div>
+                            <div class="progress-text" id="bulk-progress-text">Preparing to process URLs...</div>
+                        </div>
+                        
+                        <!-- Results Container -->
+                        <div class="bulk-results" id="bulk-results" style="display: none;">
+                            <!-- Results will be dynamically populated by JavaScript -->
+                        </div>
+                        
+                        <!-- Export Actions -->
+                        <div class="bulk-actions" id="bulk-export-actions" style="display: none;">
+                            <button id="bulk-copy-btn" class="bulk-btn success">Copy Clean URLs</button>
+                            <button id="bulk-download-btn" class="bulk-btn primary">Download CSV Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2>Your Local Statistics</h2>
+                <p class="stats-note">Counts are saved in <strong>your browser only</strong> via localStorage — private to your device, reset if you clear site data.</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-detoxed">0</div>
+                        <div class="stat-label">Links Detoxed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="params-removed">0</div>
+                        <div class="stat-label">Parameters Removed</div>
+                    </div>
+                </div>
+            </div>            <div class="how-it-works-section">
+                <h2>How It Works</h2>
+                <div class="how-it-works-grid">
+                    <div class="step">
+                        <div class="step-icon">🔍</div>
+                        <h3>1. Paste</h3>
+                        <p>Drop any URL into the input. LinkDetoxer instantly parses every parameter, fragment, and hidden tracker embedded in the link.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🎯</div>
+                        <h3>2. Detect</h3>
+                        <p>Our database of 2500+ tracking signatures is matched against your URL, catching trackers from Google, Meta, TikTok, and hundreds more.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🧹</div>
+                        <h3>3. Clean</h3>
+                        <p>Tracking junk is surgically removed while keeping every parameter the destination site actually needs to function properly.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🔒</div>
+                        <h3>4. Private</h3>
+                        <p>100% client-side. Zero data leaves your browser. No logs, no analytics, no external requests. Your links stay yours.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tracking-types-section">
+                <h2>Tracking Parameters We Remove (2500+)</h2>
+                <p class="section-description">LinkDetoxer strips tracking from virtually every major platform and service across the web</p>
+                
+                <div class="tracking-categories">
+                    <div class="category">
+                        <h3>🎯 Google Ecosystem</h3>
+                        <div class="platform-list">
+                            <span class="platform">Google Analytics</span>
+                            <span class="platform">Google Ads</span>
+                            <span class="platform">Google Tag Manager</span>
+                            <span class="platform">YouTube</span>
+                        </div>
+                        <p class="params-sample">utm_*, gclid, _ga, _gid, gbraid, wbraid, gtm_*, feature, si, ved</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>📱 Social Media Giants</h3>
+                        <div class="platform-list">
+                            <span class="platform">Facebook/Meta</span>
+                            <span class="platform">Instagram</span>
+                            <span class="platform">Twitter/X</span>
+                            <span class="platform">TikTok</span>
+                            <span class="platform">LinkedIn</span>
+                            <span class="platform">Pinterest</span>
+                            <span class="platform">Reddit</span>
+                            <span class="platform">Snapchat</span>
+                        </div>
+                        <p class="params-sample">fbclid, igshid, t, s, tt_*, trk, epik, rdt_cid, srsltid</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>🛒 E-commerce & Shopping</h3>
+                        <div class="platform-list">
+                            <span class="platform">Amazon</span>
+                            <span class="platform">Shopify</span>
+                            <span class="platform">WooCommerce</span>
+                            <span class="platform">Affiliate Networks</span>
+                        </div>
+                        <p class="params-sample">tag, ref, pf_rd_*, pd_rd_*, sca_ref, aff_id, clickid, subid*</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>📧 Email Marketing</h3>
+                        <div class="platform-list">
+                            <span class="platform">HubSpot</span>
+                            <span class="platform">Mailchimp</span>
+                            <span class="platform">Klaviyo</span>
+                            <span class="platform">SendGrid</span>
+                            <span class="platform">Constant Contact</span>
+                        </div>
+                        <p class="params-sample">hsCtaTracking, _hsenc, mc_cid, mc_eid, kx, sg_*, mkt_tok</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>📊 Analytics Platforms</h3>
+                        <div class="platform-list">
+                            <span class="platform">Adobe Analytics</span>
+                            <span class="platform">Microsoft/Bing</span>
+                            <span class="platform">Matomo</span>
+                            <span class="platform">Piwik</span>
+                        </div>
+                        <p class="params-sample">adobe_mc, s_cid, msclkid, ocid, pk_*, mtm_*</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>🌍 International Platforms</h3>
+                        <div class="platform-list">
+                            <span class="platform">WeChat (China)</span>
+                            <span class="platform">Yandex (Russia)</span>
+                            <span class="platform">VK (Russia)</span>
+                            <span class="platform">Naver (Korea)</span>
+                            <span class="platform">Baidu (China)</span>
+                        </div>
+                        <p class="params-sample">spm, from, hmsr, yclid, vk_*, naver_*</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>📱 Mobile App Attribution</h3>
+                        <div class="platform-list">
+                            <span class="platform">AppsFlyer</span>
+                            <span class="platform">Branch</span>
+                            <span class="platform">Adjust</span>
+                            <span class="platform">Singular</span>
+                        </div>
+                        <p class="params-sample">af_*, install_referrer, click_id, adjust_*, branch_*</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>🎮 Gaming & Entertainment</h3>
+                        <div class="platform-list">
+                            <span class="platform">Steam</span>
+                            <span class="platform">Spotify</span>
+                            <span class="platform">Netflix</span>
+                            <span class="platform">Twitch</span>
+                            <span class="platform">Discord</span>
+                        </div>
+                        <p class="params-sample">steam_*, si, trackId, tt_medium, utm_*</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>💰 Payment & Fintech</h3>
+                        <div class="platform-list">
+                            <span class="platform">PayPal</span>
+                            <span class="platform">Stripe</span>
+                            <span class="platform">Crypto Platforms</span>
+                            <span class="platform">Banking Apps</span>
+                        </div>
+                        <p class="params-sample">wallet_*, transaction_*, crypto_*, token_*</p>
+                    </div>
+                    
+                    <div class="category">
+                        <h3 style="justify-content: center;">🔬 Advanced Tracking</h3>
+                        <div class="platform-list">
+                            <span class="platform">A/B Testing</span>
+                            <span class="platform">Ad Networks</span>
+                            <span class="platform">GDPR Compliance</span>
+                            <span class="platform">Bot Detection</span>
+                        </div>
+                        <p class="params-sample">variant, experiment, dsp_*, consent, bot_*, fingerprint</p>
+                    </div>
+                </div>
+                  <div class="stats-highlight">
+                    <h3>Complete Coverage</h3>
+                    <div class="coverage-stats">
+                        <div class="coverage-item">
+                            <span class="number">2500+</span>
+                            <span class="label">Tracking Parameters</span>
+                        </div>
+                        <div class="coverage-item">
+                            <span class="number">100+</span>
+                            <span class="label">Major Platforms</span>
+                        </div>
+                        <div class="coverage-item">
+                            <span class="number">100%</span>
+                            <span class="label">Client-Side Processing</span>
+                        </div>
+                        <div class="coverage-item">
+                            <span class="number">0</span>
+                            <span class="label">Data Sent to Servers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>        <footer>
+            <p>Made with ❤️ by <a href="https://github.com/Angel2mp3" target="_blank">Angel</a> for privacy-conscious users &nbsp;|&nbsp; Open source on <a href="https://github.com/Angel2mp3/LinkDetoxer" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
